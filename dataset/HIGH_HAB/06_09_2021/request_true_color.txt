@@ -1,0 +1,38 @@
+{
+  "input": {
+    "bounds": {
+      "bbox": [
+        -83.721252,
+        41.182788,
+        -81.748928,
+        42.167475
+      ]
+    },
+    "data": [
+      {
+        "dataFilter": {
+          "timeRange": {
+            "from": "2021-09-05T00:00:00Z",
+            "to": "2021-09-07T23:59:59Z"
+          },
+          "maxCloudCoverage": 10,
+          "mosaickingOrder": "leastCC"
+        },
+        "type": "sentinel-2-l2a"
+      }
+    ]
+  },
+  "output": {
+    "width": 512,
+    "height": 339.647,
+    "responses": [
+      {
+        "identifier": "default",
+        "format": {
+          "type": "image/jpeg"
+        }
+      }
+    ]
+  },
+  "evalscript": "//VERSION=3\n\nfunction setup() {\n  return {\n    input: [\"B02\", \"B03\", \"B04\"],\n    output: { bands: 3 }\n  };\n}\n\nfunction evaluatePixel(sample) {\n  return [2.5 * sample.B04, 2.5 * sample.B03, 2.5 * sample.B02];\n}"
+}

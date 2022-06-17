@@ -1,0 +1,72 @@
+Filename: tf2.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    61    274.7 MiB    274.7 MiB           1   @profile(stream=fp)
+    62                                         def do_prediction():
+    63    274.7 MiB      0.0 MiB           1       columns = ["B01",
+    64                                                        "B02",
+    65                                                        "B03",
+    66                                                        "B04",
+    67                                                        "B05",
+    68                                                        "B06",
+    69                                                        "B07",
+    70                                                        "B08",
+    71                                                        "B08A",
+    72                                                        "B09",
+    73                                                        "B11",
+    74                                                        "B12",
+    75                                                        "NDCI",
+    76                                                        "NDVI",
+    77                                                        "NDVI_B8A",
+    78                                                        "MPHBI",
+    79                                                        "RD1",
+    80                                                        "RD2",
+    81                                                        "RD3",
+    82                                                        "CLASS"
+    83                                                        ]
+    84                                         
+    85    282.1 MiB      7.3 MiB           1       df = pd.read_csv('./numerical_dataset/hab_dataset_to_tf.csv')
+    86    282.4 MiB      0.4 MiB           1       print(df.head())
+    87    284.8 MiB      2.4 MiB           1       X = df.drop(['CLASS'], axis=1)
+    88                                         
+    89    284.8 MiB      0.0 MiB           1       Y = df['CLASS']
+    90                                         
+    91    284.8 MiB      0.0 MiB           1       print(X.head())
+    92    284.9 MiB      0.0 MiB           1       print(Y.head())
+    93                                         
+    94                                             # normalize/scale features
+    95                                             # min_max_scaler = preprocessing.MinMaxScaler()
+    96                                             # X = pd.DataFrame(min_max_scaler.fit_transform(X))
+    97                                         
+    98    286.7 MiB      1.8 MiB           1       x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=1)
+    99                                         
+   100    288.9 MiB      2.2 MiB           2       l2 = tf.keras.regularizers.L2(
+   101    288.9 MiB      0.0 MiB           1           l2=0.01
+   102                                             )
+   103                                         
+   104    294.6 MiB      4.5 MiB           2       model = tf.keras.models.Sequential([
+   105    289.8 MiB      0.9 MiB           1           tf.keras.layers.Input(19),
+   106    290.1 MiB      0.3 MiB           1           tf.keras.layers.Dense(20, activation=tf.nn.sigmoid),
+   107    290.1 MiB      0.0 MiB           1           tf.keras.layers.Dense(20, activation=tf.nn.relu),
+   108    290.1 MiB      0.0 MiB           1           tf.keras.layers.Dense(20, activation=tf.nn.sigmoid),
+   109    290.1 MiB      0.0 MiB           1           tf.keras.layers.Dense(20, activation=tf.nn.relu),
+   110    290.1 MiB      0.0 MiB           1           tf.keras.layers.Dense(20, activation=tf.nn.sigmoid),
+   111    290.1 MiB      0.0 MiB           1           tf.keras.layers.Dense(20, activation=tf.nn.relu),
+   112    290.1 MiB      0.0 MiB           1           tf.keras.layers.Dense(1, activation=tf.nn.sigmoid)
+   113                                             ])
+   114    295.3 MiB      0.5 MiB           2       model.compile(optimizer="adam",
+   115    294.6 MiB      0.0 MiB           1                     loss='binary_crossentropy',
+   116    294.8 MiB      0.2 MiB           1                     metrics=["accuracy", tf.keras.metrics.AUC(from_logits=True)])
+   117                                         
+   118                                             # model.compile(optimizer="adam",
+   119                                             #               loss='binary_crossentropy',
+   120                                             #               metrics=['acc',f1_m,precision_m, recall_m])
+   121                                         
+   122    350.8 MiB     55.5 MiB           1       model.fit(x_train, y_train, epochs=200, batch_size=50)
+   123                                         
+   124    358.3 MiB      7.5 MiB           1       res = model.evaluate(x_test, y_test, return_dict=True)
+   125                                         
+   126    358.3 MiB      0.0 MiB           1       print("[test loss, test acc, AUC]=", res)
+
+
